@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-import sys
-import os
 import argparse
+import os
 import random
+import sys
 
 import torch.cuda
 import torch.distributed
 import torch.multiprocessing
 
-from retinanet import infer, train, utils
+from retinanet import infer, train
 from retinanet.model import Model
 from retinanet._C import Engine
 
