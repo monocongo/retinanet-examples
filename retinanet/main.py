@@ -75,28 +75,32 @@ def parse(args):
 
 
 def load_model(args, verbose=False):
-    if args.command != 'train' and not os.path.isfile(args.model):
-        raise RuntimeError('Model file {} does not exist!'.format(args.model))
+    if (args.command != 'train') and not os.path.isfile(args.model):
+        raise RuntimeError(f'Model file {args.model} does not exist!')
 
     state = {}
     _, ext = os.path.splitext(args.model)
 
-    if args.command == 'train' and (not os.path.exists(args.model) or args.override):
-        if verbose: print('Initializing model...')
+    if (args.command == 'train') and (not os.path.exists(args.model) or args.override):
+        if verbose:
+            print('Initializing model...')
         model = Model(args.backbone, args.classes)
         model.initialize(args.fine_tune)
-        if verbose: print(model)
+        if verbose:
+            print(model)
 
-    elif ext == '.pth' or ext == '.torch':
-        if verbose: print('Loading model from {}...'.format(os.path.basename(args.model)))
+    elif (ext == '.pth') or (ext == '.torch'):
+        if verbose:
+            print(f'Loading model from {os.path.basename(args.model)}...')
         model, state = Model.load(args.model)
-        if verbose: print(model)
+        if verbose:
+            print(model)
 
-    elif args.command == 'infer' and ext in ['.engine', '.plan']:
+    elif (args.command == 'infer') and (ext in ['.engine', '.plan']):
         model = None
 
     else:
-        raise RuntimeError('Invalid model format "{}"!'.format(args.ext))
+        raise RuntimeError(f'Invalid model format "{ext}"!')
 
     state['path'] = args.model
     return model, state
