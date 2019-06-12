@@ -3,18 +3,19 @@ import sys
 import os
 import argparse
 import random
+
 import torch.cuda
 import torch.distributed
 import torch.multiprocessing
 
 from retinanet import infer, train, utils
 from retinanet.model import Model
-from retinanet import backbones
 from retinanet._C import Engine
+
 
 def parse(args):
     parser = argparse.ArgumentParser(description='RetinaNet Detection Utility.')
-    parser.add_argument('--master', metavar='address:port', type=str, help='Adress and port of the master worker', default='127.0.0.1:29500')
+    parser.add_argument('--master', metavar='address:port', type=str, help='Address and port of the master worker', default='127.0.0.1:29500')
 
     subparsers = parser.add_subparsers(help='sub-command', dest='command')
     subparsers.required = True
@@ -72,11 +73,11 @@ def parse(args):
 
     return parser.parse_args(args)
 
+
 def load_model(args, verbose=False):
     if args.command != 'train' and not os.path.isfile(args.model):
         raise RuntimeError('Model file {} does not exist!'.format(args.model))
 
-    model = None
     state = {}
     _, ext = os.path.splitext(args.model)
 
@@ -93,12 +94,13 @@ def load_model(args, verbose=False):
 
     elif args.command == 'infer' and ext in ['.engine', '.plan']:
         model = None
-    
+
     else:
         raise RuntimeError('Invalid model format "{}"!'.format(args.ext))
 
     state['path'] = args.model
     return model, state
+
 
 def worker(rank, args, world, model, state):
     'Per-device distributed worker'
@@ -120,9 +122,9 @@ def worker(rank, args, world, model, state):
 
     if args.command == 'train':
         train.train(model, state, args.images, args.annotations,
-            args.val_images or args.images, args.val_annotations, args.resize, args.max_size, args.jitter, 
-            args.batch, int(args.iters * args.schedule), args.val_iters, not args.full_precision, args.lr, 
-            args.warmup, [int(m * args.schedule) for m in args.milestones], args.gamma, 
+            args.val_images or args.images, args.val_annotations, args.resize, args.max_size, args.jitter,
+            args.batch, int(args.iters * args.schedule), args.val_iters, not args.full_precision, args.lr,
+            args.warmup, [int(m * args.schedule) for m in args.milestones], args.gamma,
             is_master=(rank == 0), world=world, use_dali=False,
             metrics_url=args.post_metrics, logdir=args.logdir, verbose=(rank == 0))
 
@@ -168,6 +170,7 @@ def worker(rank, args, world, model, state):
         else:
             exported.save(args.export)
 
+
 def main(args=None):
     'Entry point for the retinanet command'
 
@@ -181,6 +184,7 @@ def main(args=None):
         worker(0, args, 1, model, state)
     else:
         torch.multiprocessing.spawn(worker, args=(args, world, model, state), nprocs=world)
+
 
 if __name__ == '__main__':
     main()
