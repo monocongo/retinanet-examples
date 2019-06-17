@@ -104,6 +104,7 @@ def infer(model, images_dir_path, detections_file, resize, max_size, batch_size,
                 print(f'\tdata.shape: {data.shape}')
                 print(f'\tids: {ids}')
                 print(f'\tratios: {ratios}')
+            torch.save(data, "data_tensor.pt")
 
             # Forward pass
             profiler.start('fw')
