@@ -38,7 +38,7 @@ class CocoDataset(data.dataset.Dataset):
         if self.coco:
             image = self.coco.loadImgs(id)[0]['file_name']
         im = Image.open('{}/{}'.format(self.path, image)).convert("RGB")
-        
+
         # Randomly sample scale for resize during training
         resize = self.resize
         if isinstance(resize, list):
@@ -65,7 +65,7 @@ class CocoDataset(data.dataset.Dataset):
         data = torch.ByteTensor(torch.ByteStorage.from_buffer(im.tobytes()))
         data = data.float().div(255).view(*im.size[::-1], len(im.mode))
         data = data.permute(2, 0, 1)
-        
+
         for t, mean, std in zip(data, self.mean, self.std):
             t.sub_(mean).div_(std)
 
@@ -135,6 +135,10 @@ class DataIterator():
     'Data loader for data parallel'
 
     def __init__(self, path, resize, max_size, batch_size, stride, world, annotations, training=False):
+
+        # DEBUGGING ONLY -- REMOVE
+        print("\n\nDataIterator constructor")
+
         self.resize = resize
         self.max_size = max_size
 
@@ -142,11 +146,11 @@ class DataIterator():
             stride=stride, annotations=annotations, training=training)
         self.ids = self.dataset.ids
         self.coco = self.dataset.coco
-    
+
         self.sampler = data.distributed.DistributedSampler(self.dataset) if world > 1 else None
         self.dataloader = data.DataLoader(self.dataset, batch_size=batch_size // world,
             sampler=self.sampler, collate_fn=self.dataset.collate_fn, num_workers=2, pin_memory=True)
-        
+
     def __repr__(self):
         return '\n'.join([
             '    loader: pytorch',
@@ -155,7 +159,7 @@ class DataIterator():
 
     def __len__(self):
         return len(self.dataloader)
-        
+
     def __iter__(self):
         for output in self.dataloader:
             if self.dataset.training:
@@ -175,4 +179,4 @@ class DataIterator():
                     ids = ids.cuda(non_blocking=True)
                     ratio = ratio.cuda(non_blocking=True)
                 yield data, ids, ratio
-  
+
