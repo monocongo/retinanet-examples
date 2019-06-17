@@ -136,9 +136,6 @@ class DataIterator():
 
     def __init__(self, path, resize, max_size, batch_size, stride, world, annotations, training=False):
 
-        # DEBUGGING ONLY -- REMOVE
-        print("\n\nDataIterator constructor")
-
         self.resize = resize
         self.max_size = max_size
 
@@ -150,6 +147,12 @@ class DataIterator():
         self.sampler = data.distributed.DistributedSampler(self.dataset) if world > 1 else None
         self.dataloader = data.DataLoader(self.dataset, batch_size=batch_size // world,
             sampler=self.sampler, collate_fn=self.dataset.collate_fn, num_workers=2, pin_memory=True)
+
+        # DEBUGGING ONLY -- REMOVE
+        print("\n\nDataIterator constructor")
+        print(f"sampler: {self.sampler}")
+        print(f"\nCOCO: {self.coco}")
+        print(f"\ndataloader: {self.dataloader}")
 
     def __repr__(self):
         return '\n'.join([
