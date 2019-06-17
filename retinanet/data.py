@@ -165,10 +165,29 @@ class DataIterator():
 
     def __iter__(self):
         for output in self.dataloader:
+
+            # FOR DEBUGGING ONLY -- REMOVE
+            print("\n\nWithin DaliDataIterator.__iter__()")
+            print(f"\ttype(output): {type(output)}")
+            print(f"\tbatch_size: {self.batch_size}")
+
             if self.dataset.training:
                 data, target = output
             else:
                 data, ids, ratio = output
+
+            # FOR DEBUGGING ONLY -- REMOVE
+            print(f"\ttype(data): {type(data)}")
+            print(f"\tdata.dtype: {data.dtype}")
+            print(f"\tdata.shape: {data.shape}")
+            print(f"\ttype(ids): {type(ids)}")
+            print(f"\tids.dtype: {ids.dtype}")
+            print(f"\tids.shape: {ids.shape}")
+            print(f"\tids: {ids}")
+            print(f"\ttype(ratio): {type(ratio)}")
+            print(f"\tratio.dtype: {ratio.dtype}")
+            print(f"\tratio.shape: {ratio.shape}")
+            print(f"\tratio: {ratio}")
 
             if torch.cuda.is_available():
                 data = data.cuda(non_blocking=True)
@@ -181,5 +200,20 @@ class DataIterator():
                 if torch.cuda.is_available():
                     ids = ids.cuda(non_blocking=True)
                     ratio = ratio.cuda(non_blocking=True)
+
+                # FOR DEBUGGING ONLY -- REMOVE
+                print("\nAfter cuda()")
+                print(f"\ttype(data): {type(data)}")
+                print(f"\tdata.dtype: {data.dtype}")
+                print(f"\tdata.shape: {data.shape}")
+                print(f"\ttype(ids): {type(ids)}")
+                print(f"\tids.dtype: {ids.dtype}")
+                print(f"\tids.shape: {ids.shape}")
+                print(f"\tids: {ids}")
+                print(f"\ttype(ratio): {type(ratio)}")
+                print(f"\tratio.dtype: {ratio.dtype}")
+                print(f"\tratio.shape: {ratio.shape}")
+                print(f"\tratio: {ratio}")
+
                 yield data, ids, ratio
 
