@@ -169,7 +169,6 @@ class DataIterator():
             # FOR DEBUGGING ONLY -- REMOVE
             print("\n\nWithin DaliDataIterator.__iter__()")
             print(f"\ttype(output): {type(output)}")
-            print(f"\tbatch_size: {self.batch_size}")
 
             if self.dataset.training:
                 data, target = output
