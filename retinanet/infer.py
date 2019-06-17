@@ -102,7 +102,13 @@ def infer(model, images_dir_path, detections_file, resize, max_size, batch_size,
                 print(f'\ttype(data): {type(data)}')
                 print(f'\tdata.dtype: {data.dtype}')
                 print(f'\tdata.shape: {data.shape}')
+                print(f'\ttype(ids): {type(ids)}')
+                print(f'\tids.dtype: {ids.dtype}')
+                print(f'\tids.shape: {ids.shape}')
                 print(f'\tids: {ids}')
+                print(f'\ttype(ratios): {type(ratios)}')
+                print(f'\tratios.dtype: {ratios.dtype}')
+                print(f'\tratios.shape: {ratios.shape}')
                 print(f'\tratios: {ratios}')
             torch.save(data, "data_tensor.pt")
 
