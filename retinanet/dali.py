@@ -52,6 +52,7 @@ class COCOPipeline(pipeline.Pipeline):
         self.feed_input(self.images, images)
         self.feed_input(self.images_ids, ids)
 
+
 class DaliDataIterator():
     'Data loader for data parallel using Dali'
 
@@ -76,6 +77,12 @@ class DaliDataIterator():
             ids=self.local_ids, path=path, coco=self.coco, training=training)
         self.pipe.build()
 
+        # DEBUGGING ONLY -- REMOVE
+        print("\n\nDaliDataIterator constructor")
+        print(f"ids: {self.local_ids}")
+        print(f"\nCOCO: {self.coco}")
+        print(f"\nPipeline: {self.pipe}")
+
     def __repr__(self):
         return '\n'.join([
             '    loader: dali',
@@ -89,6 +96,18 @@ class DaliDataIterator():
         for _ in range(self.__len__()):
             data, ratios, ids = [], [], []
             dali_data, dali_ids = self.pipe.run()
+
+            # FOR DEBUGGING ONLY -- REMOVE
+            print("\n\nWithin DaliDataIterator.__iter__()")
+            print(f"\ttype(dali_data): {type(dali_data)}")
+            print(f"\tdali_data.dtype: {dali_data.dtype}")
+            print(f"\tdali_data.shape: {dali_data.shape}")
+            print(f"\ttype(dali_ids): {type(dali_ids)}")
+            print(f"\tdali_ids.dtype: {dali_ids.dtype}")
+            print(f"\tdali_ids.shape: {dali_ids.shape}")
+            print(f"\tdali_ids: {dali_ids}")
+            print(f"\tbatch_size: {self.batch_size}")
+
             for batch in range(self.batch_size):
                 id = int(dali_ids.at(batch)[0])
                 if id < 0: break
