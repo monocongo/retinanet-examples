@@ -99,7 +99,9 @@ def infer(model, images_dir_path, detections_file, resize, max_size, batch_size,
             # FOR DEBUGGING ONLY -- REMOVE
             if verbose:
                 print(f'Image {i}...')
-                print(f'\tdata: {data}')
+                print(f'\ttype(data): {type(data)}')
+                print(f'\tdata.dtype: {data.dtype}')
+                print(f'\tdata.shape: {data.shape}')
                 print(f'\tids: {ids}')
                 print(f'\tratios: {ratios}')
 
