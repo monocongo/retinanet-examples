@@ -103,6 +103,13 @@ def load_model(args, verbose=False):
         raise RuntimeError(f'Invalid model format "{ext}"!')
 
     state['path'] = args.model
+
+    # FOR DEBUGGING ONLY -- REMOVE
+    if verbose:
+        print(f'Model loaded from {os.path.basename(args.model)}...')
+        print(f'model object: {model}')
+        print(f'state object: {state}')
+
     return model, state
 
 
@@ -134,7 +141,8 @@ def worker(rank, args, world, model, state):
 
     elif args.command == 'infer':
         if model is None:
-            if rank == 0: print('Loading CUDA engine from {}...'.format(os.path.basename(args.model)))
+            if rank == 0:
+                print(f'Loading CUDA engine from {os.path.basename(args.model)}...')
             model = Engine.load(args.model)
 
         infer.infer(model, args.images, args.output, args.resize, args.max_size, args.batch,
@@ -181,10 +189,11 @@ def main(args=None):
     args = parse(args or sys.argv[1:])
 
     model, state = load_model(args, verbose=True)
-    if model: model.share_memory()
+    if model:
+        model.share_memory()
 
     world = torch.cuda.device_count()
-    if args.command == 'export' or world <= 1:
+    if (args.command == 'export') or (world <= 1):
         worker(0, args, 1, model, state)
     else:
         torch.multiprocessing.spawn(worker, args=(args, world, model, state), nprocs=world)

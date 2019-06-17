@@ -1,14 +1,14 @@
-import os
 from contextlib import redirect_stdout
-from math import ceil
 import ctypes
-import numpy as np
-import torch
-import torch.nn.functional as F
-import numpy as np
+from math import ceil
 import random
+
+import numpy as np
 from nvidia.dali import pipeline, ops, types
 from pycocotools.coco import COCO
+import torch
+import torch.nn.functional as F
+
 
 class COCOPipeline(pipeline.Pipeline):
     'Dali pipeline for COCO'
@@ -44,11 +44,11 @@ class COCOPipeline(pipeline.Pipeline):
             image = open(self.path + file_name, 'rb')
             images.append(np.frombuffer(image.read(), dtype=np.uint8))
             ids.append(np.array([-1 if overflow else id], dtype=np.float))
-            
+
             overflow = self.iter + 1 >= len(self.ids)
             if not overflow:
                 self.iter = (self.iter + 1) % len(self.ids)
-    
+
         self.feed_input(self.images, images)
         self.feed_input(self.images_ids, ids)
 
@@ -69,10 +69,10 @@ class DaliDataIterator():
             self.coco = COCO(annotations)
         self.ids = list(self.coco.imgs.keys())
         if 'categories' in self.coco.dataset:
-            self.categories_inv = { k: i for i, k in enumerate(self.coco.getCatIds()) }
+            self.categories_inv = {k: i for i, k in enumerate(self.coco.getCatIds())}
         self.local_ids = np.array_split(np.array(self.ids), world)[torch.cuda.current_device()]
 
-        self.pipe = COCOPipeline(batch_size=self.batch_size, num_threads=2, 
+        self.pipe = COCOPipeline(batch_size=self.batch_size, num_threads=2,
             ids=self.local_ids, path=path, coco=self.coco, training=training)
         self.pipe.build()
 
@@ -92,7 +92,7 @@ class DaliDataIterator():
             for batch in range(self.batch_size):
                 id = int(dali_ids.at(batch)[0])
                 if id < 0: break
-                
+
                 # Convert dali tensor to pytorch
                 dali_tensor = dali_data.at(batch)
                 datum = torch.zeros(dali_tensor.shape(), dtype=torch.uint8, device=torch.device('cuda'))
