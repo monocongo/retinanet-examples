@@ -107,8 +107,7 @@ def load_model(args, verbose=False):
     # FOR DEBUGGING ONLY -- REMOVE
     if verbose:
         print(f'Model loaded from {os.path.basename(args.model)}...')
-        # print(f'model object: {model}')
-        # print(f'state object: {state}')
+        print(f'type(model): {type(model)}')
 
     return model, state
 
