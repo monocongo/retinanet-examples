@@ -119,6 +119,12 @@ def infer(model, images_dir_path, detections_file, resize, max_size, batch_size,
             scores, boxes, classes = model(data)
             profiler.stop('fw')
 
+            # FOR DEBUGGING ONLY -- REMOVE
+            print("\n\nInference results")
+            print(f"\tscores: {scores}")
+            print(f"\tboxes: {boxes}")
+            print(f"\tclasses: {classes}")
+
             results.append([scores, boxes, classes, ids, ratios])
 
             profiler.bump('infer')
