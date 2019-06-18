@@ -61,6 +61,11 @@ class CocoDataset(data.dataset.Dataset):
 
             target = torch.cat([boxes, categories], dim=1)
 
+        # FOR DEBUGGING ONLY -- REMOVE
+        print("\n\nIn CocoDataset.__getitem__")
+        print(f'Image before conversion to Tensor: {im}')
+        print(f'im.size: {im.size}')
+
         # Convert to tensor and normalize
         data = torch.ByteTensor(torch.ByteStorage.from_buffer(im.tobytes()))
         data = data.float().div(255).view(*im.size[::-1], len(im.mode))
@@ -72,6 +77,11 @@ class CocoDataset(data.dataset.Dataset):
         # Apply padding
         pw, ph = ((self.stride - d % self.stride) % self.stride for d in im.size)
         data = F.pad(data, (0, pw, 0, ph))
+
+        # FOR DEBUGGING ONLY -- REMOVE
+        print(f'Padding width: {pw}')
+        print(f'Padding height: {ph}')
+        print(f'Ratio: {ratio}')
 
         if self.training:
             return data, target
