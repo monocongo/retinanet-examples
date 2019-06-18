@@ -167,7 +167,7 @@ class DataIterator():
         for output in self.dataloader:
 
             # FOR DEBUGGING ONLY -- REMOVE
-            print("\n\nWithin DaliDataIterator.__iter__()")
+            print("\n\nWithin DataIterator.__iter__()")
             print(f"\ttype(output): {type(output)}")
 
             if self.dataset.training:
