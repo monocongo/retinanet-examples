@@ -110,6 +110,8 @@ def infer(model, images_dir_path, detections_file, resize, max_size, batch_size,
                 print(f'\tratios.dtype: {ratios.dtype}')
                 print(f'\tratios.shape: {ratios.shape}')
                 print(f'\tratios: {ratios}')
+                print(f'\nFirst pixel: {data[0, :, 0, 0]}')
+                print(f'\nSecond pixel: {data[0, :, 0, 1]}')
             torch.save(data, "data_tensor.pt")
 
             # Forward pass
