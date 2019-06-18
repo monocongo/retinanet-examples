@@ -79,6 +79,7 @@ class CocoDataset(data.dataset.Dataset):
         data = F.pad(data, (0, pw, 0, ph))
 
         # FOR DEBUGGING ONLY -- REMOVE
+        print(f'Stride: {self.stride}')
         print(f'Padding width: {pw}')
         print(f'Padding height: {ph}')
         print(f'Ratio: {ratio}')

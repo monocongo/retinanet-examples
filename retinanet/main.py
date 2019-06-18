@@ -108,6 +108,7 @@ def load_model(args, verbose=False):
     if verbose:
         print(f'Model loaded from {os.path.basename(args.model)}...')
         print(f'type(model): {type(model)}')
+        print(f'model.stride: {model.stride}')
 
     return model, state
 
