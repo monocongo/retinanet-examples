@@ -151,8 +151,9 @@ class DataIterator():
         # DEBUGGING ONLY -- REMOVE
         print("\n\nDataIterator constructor")
         print(f"sampler: {self.sampler}")
-        print(f"\nCOCO: {self.coco}")
-        print(f"\ndataloader: {self.dataloader}")
+        print(f"\ntype(dataloader): {type(self.dataloader)}")
+        print(f"\nresize: {self.resize}")
+        print(f"\nmax_size: {self.max_size}")
 
     def __repr__(self):
         return '\n'.join([
